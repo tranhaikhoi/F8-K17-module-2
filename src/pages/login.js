@@ -1,4 +1,5 @@
 import instance from "../httpRequest";
+import { Header } from "../components/header";
 export default function login() {
   return `
     <section class="fixed inset-0 w-full h-screen overflow-hidden">
@@ -7,10 +8,12 @@ export default function login() {
         alt="login"
         class="w-full h-full object-cover block relative"
       />
+      <span class="js-success-login fixed z-20 top-30 right-0 px-20 py-2.5 text-white bg-green-600 rounded-2xl
+         translate-x-full opacity-0 transition-all duration-300 ease-in-out">Đăng nhập thành công</span>
 
       <form
         class="absolute top-[calc(50%-20px)] left-1/2 -translate-x-1/2 -translate-y-1/2
-               flex flex-col bg-white/50 backdrop-blur-xl w-[20%] p-8 rounded-[10px] hidden" id="loginForm" 
+               flex flex-col bg-white/50 backdrop-blur-xl w-[20%] p-8 rounded-[10px] " id="loginForm" 
       >
         <h2 class="text-2xl text-center text-white uppercase mb-6">đăng nhập</h2>
 
@@ -34,7 +37,7 @@ export default function login() {
           </h3>
         </label>
         <button
-          class="px-5 py-2 bg-black rounded-xl mb-8 hover:bg-pink-400 cursor-pointer text-white" id="btn-login"
+          class="px-5 py-2 bg-black rounded-xl mb-8 hover:bg-pink-400 cursor-pointer text-white" id="btn-login" type="submit"
         >
           Đăng nhập
         </button>
@@ -47,7 +50,7 @@ export default function login() {
       <!---------------------------------------------------------ĐĂNG KÝ------------------------------------------------------------------>
       <form
         class="absolute top-30 left-1/2 -translate-x-1/2
-         flex flex-col bg-white/50 backdrop-blur-xl w-[28%] px-14 py-10 rounded-[10px] js-register " id="registerForm"
+         flex flex-col bg-white/50 backdrop-blur-xl w-[28%] px-14 py-10 rounded-[10px] js-register hidden" id="registerForm"
       >
         <h2 class="text-2xl text-center text-white uppercase mb-6">đăng ký</h2>
 
@@ -210,7 +213,7 @@ export function initRegister() {
     const password = passwordEl.value.trim();
     const confirmPassword = rePasswordEl.value.trim();
     if (!email || !name || !password || !confirmPassword) return;
-
+    localStorage.setItem("register_name", name);
     try {
       btnRes.disabled = true;
 
@@ -232,7 +235,7 @@ export function initRegister() {
       loginForm.classList.remove("hidden");
     } catch (error) {
       console.error(error);
-      alert(error?.response?.data?.message || "Đăng ký thất bại!");
+      alert(error.response.data.message || "Đăng ký thất bại!");
     } finally {
       btnRes.disabled = false;
     }
@@ -248,9 +251,10 @@ export function initLogin() {
   const btnLogin = document.querySelector("#btn-login");
   const registerText = document.querySelector(".js-register-login");
   const inputLog = document.querySelectorAll("input");
+  const loginForm = document.querySelector("#loginForm");
+  const registerForm = document.querySelector("#registerForm");
+  const successLogin = document.querySelector(".js-success-login");
   btnLogin.addEventListener("click", (e) => {
-    e.preventDefault();
-
     if (!emailLog.value.trim()) {
       emailErrorTextLog.classList.remove("hidden");
       emailErrorTextLog.textContent = "Email không được để trống";
@@ -265,15 +269,80 @@ export function initLogin() {
       passErrorTextLog.classList.add("hidden");
     }
   });
+
   registerText.addEventListener("click", (e) => {
     e.preventDefault();
     loginForm.classList.add("hidden");
     registerForm.classList.remove("hidden");
   });
+
   //Chống XSS
   inputLog.forEach((inti) => {
     inti.addEventListener("input", () => {
       inti.value = inti.value.replace(/[<>]/g, "");
     });
   });
+  if (!loginForm || !emailLog || !passwordLog) {
+    alert("Vui lòng nhập thông tin");
+    return;
+  }
+  //===========================================================LOGIN SAU KHI DỮ LIỆU ĐÃ ĐƯỢC LƯU VÀO SERVER=====================================//
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = emailLog.value.trim();
+    const password = passwordLog.value;
+
+    if (!email || !password) return;
+
+    try {
+      const response = await instance.post("/auth/login", { email, password });
+      const data = response.data;
+
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      if (successLogin) {
+        successLogin.classList.remove("translate-x-full", "opacity-0");
+        successLogin.classList.add("opacity-100");
+      }
+
+      setTimeout(() => {
+        successLogin?.classList.add("opacity-0");
+      }, 1200);
+
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+    } catch (error) {
+      console.error(error);
+      alert(error.response.data.message || "Đăng nhập thất bại!");
+    }
+  });
 }
+//=======================================================ĐĂNG XUẤT============================================================================//
+export async function initLogOut() {
+  const access_token = localStorage.getItem("access_token");
+  try {
+    await instance.delete("/auth/logout", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+  } finally {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user");
+  }
+}
+export function logoutPress() {
+  const logOutEl = document.querySelector(".js-logout");
+  if (!logOutEl) return;
+  logOutEl.addEventListener("click", async (e) => {
+    e.preventDefault();
+    await initLogOut();
+    window.location.href = "/auth/profile";
+  });
+}
+//=====================================================HỒ SƠ NGƯỜI DÙNG=======================================================================//

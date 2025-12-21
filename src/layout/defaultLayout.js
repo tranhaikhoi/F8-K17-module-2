@@ -1,8 +1,17 @@
-import { Header, initHeader } from "../components/header";
+import {
+  Header,
+  initHeader,
+  updateLoginAuth,
+  menuCustom,
+} from "../components/header";
 import { Sidebar } from "../components/sidebar";
-
+import { control } from "../pages/control";
 export function defaultLayout() {
-  setTimeout(() => initHeader(), 0);
+  setTimeout(() => {
+    initHeader();
+    updateLoginAuth();
+    menuCustom();
+  }, 0);
 
   return `
     ${Header()}
@@ -12,6 +21,7 @@ export function defaultLayout() {
       <!--Main content will be rendered here-->
       
       </main>
+      ${control()}
     </div>
   `;
 }

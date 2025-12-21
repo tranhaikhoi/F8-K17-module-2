@@ -1,10 +1,11 @@
 import instance from "../httpRequest";
-
+import login from "../pages/login";
+import { initLogin } from "../pages/login";
 export default function Mood() {
   return `
     <section class="relative">
-      <h2 class="text-5xl font-semibold text-white mb-20">
-        👋 Chào mừng <span></span>
+      <h2 class="text-5xl font-semibold text-white mb-20 js-hello">
+        <i class="fa-solid fa-hand-peace"></i> Chào mừng<span class="js-hello-name"></span>
       </h2>
 
       <div class="absolute right-0 top-20 flex items-center gap-4">
@@ -35,19 +36,27 @@ export function moodScript() {
     // Step 3
     const moodsContainer = document.querySelector(".js-moods");
     if (!moodsContainer) return;
-
     moodsContainer.innerHTML = moods
       .map(
         (mood) => `
           <div class="flex items-center px-3 py-2 rounded-lg text-sm shrink-0 cursor-pointer bg-white/10 text-white hover:bg-white/20">
-            <a href="/moods/${mood.slug}">${mood.name}</a>
+            <a href="/moods/${mood.slug}" data-navigo>${mood.name}</a>
           </div>
         `
       )
       .join("");
   }
-
   fetchMoods();
+}
+
+//==========================================hello người dùng==================================================//
+export function initHelloUser() {
+  const helloName = document.querySelector(".js-hello-name");
+  if (!helloName) return;
+  const nameDisplay = localStorage.getItem("user");
+  const user = nameDisplay ? JSON.parse(nameDisplay) : null;
+  const name = user?.name || localStorage.getItem("register_name") || "";
+  helloName.textContent = name ? ` ${name}` : "";
 }
 
 // ======================================================

@@ -1,8 +1,9 @@
 //HTML
 import instance from "../httpRequest";
+import { profile } from "../pages/profile";
 export const Header = () => {
   return `
-    <header class="fixed top-0 left-0 right-0 flex items-center bg-black h-20 z-30">
+    <header class="fixed top-0 left-0 right-0 flex items-center bg-black/80 h-20 z-30">
       <button
         type="button"
         class="grid h-10 w-10 place-items-center rounded-full text-white hover:bg-white/10 mx-7 cursor-pointer js-bar"
@@ -13,7 +14,10 @@ export const Header = () => {
 
       <div class="flex items-center gap-2 mr-[60px] cursor-pointer">
         <svg width="28" height="28" viewBox="0 0 24 24" class="text-red-600">
-          <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+          <path
+            fill="currentColor"
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"
+          />
           <path fill="#fff" d="M10 8v8l6-4-6-4z" />
         </svg>
         <span class="font-semibold text-white text-2xl">Music</span>
@@ -22,44 +26,85 @@ export const Header = () => {
       <div class="flex flex-1 items-center mx-auto">
         <div class="flex w-full max-w-[550px] items-center gap-2 rounded-lg bg-white/10 px-3 py-2 ring-1 ring-white/10 focus-within:ring-white/20">
           <span class="text-white/70">
-            <span class="material-symbols-outlined text-xl leading-none">search</span>
+            <span class="material-symbols-outlined text-xl leading-none">
+              search
+            </span>
           </span>
+
           <input
             type="text"
             placeholder="Tìm bài hát, đĩa nhạc, nghệ sĩ"
-            class="w-full bg-transparent text-sm text-white placeholder:text-white/50 outline-none js-inputSearch relative"
+            class="js-inputSearch relative w-full bg-transparent text-sm text-white placeholder:text-white/50 outline-none"
           />
-          <div class="suggestions absolute bottom-[-50px] bg-black w-full max-w-[530px] h-10 flex flex-col hidden">
-            <ul class="border-b border-gray pt-5 text-gray-500 h-10 ">Gợi ý
-            <li></li>
+
+          <div class="suggestions absolute bottom-[-50px] hidden h-10 w-full max-w-[530px] flex-col bg-black">
+            <ul class="h-10 border-b border-gray pt-5 text-gray-500">
+              Gợi ý
+              <li></li>
             </ul>
-            <ul class="pt-5 text-gray-500 h-10"> Kết quả
-            <li></li>
+
+            <ul class="h-10 pt-5 text-gray-500">
+              Kết quả
+              <li></li>
             </ul>
           </div>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 mr-11">
-        <button class="flex p-2 items-center rounded-full text-white hover:bg-white/10 cursor-pointer" type="button">
-          <span class="material-symbols-outlined text-2xl leading-none">cast</span>
+      <div class="mr-11 flex items-center gap-2">
+        <button
+          class="flex items-center rounded-full p-2 text-white hover:bg-white/10 cursor-pointer"
+          type="button"
+        >
+          <span class="material-symbols-outlined text-2xl leading-none">
+            cast
+          </span>
         </button>
 
-        <button class="flex p-2 items-center rounded-full text-white hover:bg-white/10 cursor-pointer" type="button">
-          <span class="material-symbols-outlined text-2xl leading-none">more_vert</span>
+        <button
+          class="flex items-center rounded-full p-2 text-white hover:bg-white/10 cursor-pointer"
+          type="button"
+        >
+          <span class="material-symbols-outlined text-2xl leading-none">
+            more_vert
+          </span>
         </button>
 
-        <a href="/login" data-navigo class="ml-1 rounded-full bg-white px-5 py-2 text-sm font-semibold text-black hover:bg-white/90 cursor-pointer">
+        <a
+          href="/login"
+          data-navigo
+          id="btnHeaderLogin"
+          class="ml-1 rounded-full bg-white px-5 py-2 text-sm font-semibold text-black hover:bg-white/90 cursor-pointer"
+        >
           Đăng nhập
         </a>
+
+        <div class="relative">
+  <a
+    id="userAvatar"
+    class="ml-1 hidden h-10 w-10 flex items-center justify-center rounded-full bg-white/30 font-bold text-white hover:bg-white/50"
+    title="Tài khoản"
+  ></a>
+
+  <ul
+    id="menu"
+    class="absolute right-0 top-full mt-2  w-52 rounded-lg bg-black/90  text-white shadow-lg hidden"
+  >
+    <li class="cursor-pointer  px-3 py-2 hover:bg-white/10 hover:border-b js-profile "><a href="/auth/profile" data-navigo>Thông tin người dùng</a></li>
+    <li class="cursor-pointer  px-3 py-2 hover:bg-white/10 hover:border-b js-change-password">Đổi mật khẩu</li>
+    <li class="cursor-pointer rounded-md px-3 py-2 hover:border-b hover:bg-white/10 text-red-500 js-logout">Đăng xuất</li>
+  </ul>
+</div>
+
       </div>
     </header>
   `;
 };
+
 //======================================================Xử lý newsidebar===========================================================//
 export function initHeader() {
   const btnBar = document.querySelector(".js-bar");
-  const icon = btnBar?.querySelector("i");
+  const icon = btnBar.querySelector("i");
   const mainContent = document.querySelector("#main-content");
   const miniSidebar = document.querySelector("aside.fixed.left-0.top-20");
 
@@ -118,7 +163,7 @@ export function initHeader() {
     icon.className = open ? "fa-solid fa-x" : "fa-solid fa-bars text-xl";
   };
 
-  // Trạng thái ban đầu: đóng
+  // Trạng thái ban đầu đóng
   btnBar.classList.remove("is-open");
   renderNewSidebar(false);
 
@@ -152,4 +197,52 @@ export function initHeader() {
 //     if()
 //   })
 // }
-//======================================================
+//======================================================Xử lý nút đăng nhập --> avartar tên==============================================//
+export function updateLoginAuth() {
+  const loginBtn = document.querySelector("#btnHeaderLogin");
+  const avatar = document.querySelector("#userAvatar");
+
+  if (!loginBtn || !avatar) return;
+
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
+
+  if (user?.name) {
+    loginBtn.classList.add("hidden");
+    avatar.classList.remove("hidden");
+    avatar.textContent = user.name.trim().charAt(0).toUpperCase();
+  } else {
+    loginBtn.classList.remove("hidden");
+    avatar.classList.add("hidden");
+    avatar.textContent = "";
+  }
+}
+//=================================================click avatar để mở custom menu=============================================================//
+export function menuCustom() {
+  const userAvatar = document.querySelector("#userAvatar");
+  const menu = document.querySelector("#menu");
+  if (!userAvatar || !menu) return;
+
+  userAvatar.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    menu.classList.toggle("hidden");
+  });
+
+  menu.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+
+  document.addEventListener("click", () => {
+    menu.classList.add("hidden");
+  });
+}
+//=================================================Xử lý cập nhập thông tin người dùng========================================================//
+// export function initProfile() {}
+// const profileUser = document.querySelector(".js-profile");
+// profileUser.addEventListener("click", async (e) => {
+//   e.preventDefault();
+//   await profile();
+//   window.location.href = "/auth/profile";
+// });
+//=================================================Đổi mật khẩu===============================================================================//
