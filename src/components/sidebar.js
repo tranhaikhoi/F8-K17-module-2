@@ -3,17 +3,17 @@ export const Sidebar = () => {
     <aside class="fixed left-0 top-20 h-[calc(100vh-64px)] w-25 md:w-25 lg1400:w-[5%] bg-black text-white z-30 ">
       <div class="flex h-full flex-col items-center px-2 pt-5 ">
 
-        <a href="/" data-navigo class="w-full rounded-2xl bg-gray-600 py-3 cursor-pointer hover:bg-gray-500">
+        <a href="/" data-navigo class="js-sidebar-link w-full rounded-2xl  py-3 cursor-pointer hover:bg-gray-500">
           <span class="block text-center"><i class="fa-solid fa-house text-xl"></i></span>
           <p class="mt-2 text-[10px] text-center">Trang chủ</p>
         </a>
 
-        <a href="/explore" data-navigo class="mt-1 w-full rounded-2xl py-3 cursor-pointer hover:bg-gray-600">
+        <a href="/explore" data-navigo class="js-sidebar-link mt-1 w-full rounded-2xl py-3 cursor-pointer hover:bg-gray-600">
           <span class="block text-center"><i class="fa-regular fa-compass text-xl"></i></span>
           <p class="mt-2 text-[10px] text-center">Khám phá</p>
         </a>
 
-        <a href="/library" data-navigo class="mt-1 w-full rounded-2xl py-3 cursor-pointer hover:bg-gray-600">
+        <a href="/library" data-navigo class="js-sidebar-link mt-1 w-full rounded-2xl py-3 cursor-pointer hover:bg-gray-600">
           <span class="block text-center"><i class="fa-solid fa-bookmark text-xl"></i></span>
           <p class="mt-2 text-[10px] text-center">Thư viện</p>
         </a>
@@ -21,7 +21,7 @@ export const Sidebar = () => {
         <!-- gạch dưới -->
         <div class="my-2 h-px w-full bg-white/15"></div>
 
-        <a href="/upgrade" data-navigo class="w-full rounded-2xl py-3 cursor-pointer hover:bg-gray-600 js-upgrade-icon">
+        <a href="/upgrade" data-navigo class="js-sidebar-link w-full rounded-2xl py-3 cursor-pointer hover:bg-gray-600 js-upgrade-icon">
           <span class="block text-center"><i class="fa-solid fa-crown"></i></span>
           <p class="mt-2 text-[10px] text-center">Nâng cấp</p>
         </a>
@@ -33,6 +33,17 @@ export const Sidebar = () => {
     </aside>
   `;
 };
+export function activeButton() {
+  const links = document.querySelectorAll(".js-sidebar-link");
+  if (!links.length) return;
+
+  links.forEach((link) => {
+    link.addEventListener("click", () => {
+      links.forEach((x) => x.classList.remove("bg-gray-600"));
+      link.classList.add("bg-gray-600");
+    });
+  });
+}
 export function updateSidebarAuth() {
   const upgradeEl = document.querySelector(".js-upgrade-icon");
   const loginEl = document.querySelector(".js-login-icon");

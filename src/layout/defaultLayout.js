@@ -6,11 +6,13 @@ import {
 } from "../components/header";
 import { Sidebar } from "../components/sidebar";
 import control from "../pages/control";
+import { activeButton } from "../components/sidebar";
 export function defaultLayout() {
   setTimeout(() => {
     initHeader();
     updateLoginAuth();
     menuCustom();
+    activeButton();
   }, 0);
 
   return `
