@@ -166,6 +166,12 @@ export function initHeader() {
       renderNewSidebar(false);
     }
   });
+  document.addEventListener("click", (e) => {
+    if (!btnBar.classList.contains("is-open")) return;
+    if (newSidebar.contains(e.target) || btnBar.contains(e.target)) return;
+    btnBar.classList.remove("is-open");
+    renderNewSidebar(false);
+  });
 }
 
 //======================================================Xử lý nút đăng nhập --> avartar tên==============================================//
