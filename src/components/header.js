@@ -38,7 +38,7 @@ export const Header = () => {
           />
 
             <div class="suggestions absolute top-full left-0 mt-2 hidden w-full max-w-[550px] flex-col rounded-xl bg-black/95 ring-1 ring-white/10 overflow-hidden z-50">
-              <div class="px-3 py-2 text-gray-400 text-xs border-b border-white/10"></div>
+              <div class=" text-gray-400"></div>
                 <ul class="js-suggest-list text-white"></ul>
 
               </div>

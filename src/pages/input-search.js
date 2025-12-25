@@ -1,38 +1,62 @@
-// import instance from "../httpRequest";
+import instance from "../httpRequest";
 
-// export function initSearchSuggest() {
-//   const input = document.querySelector(".js-inputSearch");
-//   const box = document.querySelector(".suggestions");
-//   const list = document.querySelector(".js-suggest-list");
-//   if (!input || !box || !list) return;
+export function initSearchSuggest() {
+  const inputEl = document.querySelector(".js-inputSearch");
+  const boxSug = document.querySelector(".suggestions");
+  const listEl = document.querySelector(".js-suggest-list");
+  if (!inputEl || !boxSug || !listEl) return;
 
-//   input.addEventListener("input", async () => {
-//     const q = input.value.trim();
+  inputEl.addEventListener("input", async () => {
+    const q = inputEl.value.trim();
 
-//     if (!q) {
-//       list.innerHTML = "Không tìm thấy kết quả";
-//       box.classList.add("hidden");
-//       box.classList.remove("flex");
-//       return;
-//     }
+    if (!q) {
+      listEl.innerHTML = "";
+      boxSug.classList.add("hidden");
+      boxSug.classList.remove("flex");
+      return;
+    }
+    try {
+      const response = await instance.get("/search/suggestions", {
+        params: { q },
+      });
+      const suggestions = response.data?.suggestions || [];
+      if (!suggestions.length) {
+        listEl.innerHTML = `<li class="px-3 py-2 text-white/70">Không tìm thấy kết quả</li>`;
+        boxSug.classList.remove("hidden");
+        boxSug.classList.add("flex");
+        return;
+      }
+      listEl.innerHTML = suggestions
+        .slice(0, 5)
+        .map(
+          (text) =>
+            `<li class="px-3 py-2 hover:bg-white/10 text-white cursor-pointer">${text}</li>`
+        )
+        .join("");
 
-//     const res = await instance.get("/search/suggestions", { params: { q } });
-//     const raw = res.data;
-//     const items = Array.isArray(raw)
-//       ? raw
-//       : raw.items || raw.suggestions || raw.data || [];
+      boxSug.classList.remove("hidden");
+      boxSug.classList.add("flex");
+    } catch (err) {
+      listEl.innerHTML = `<li class="px-3 py-2 text-white/70">Không tìm thấy kết quả</li>`;
+      boxSug.classList.remove("hidden");
+      boxSug.classList.add("flex");
+    }
+  });
 
-//     list.innerHTML = items
-//       .slice(0, 8)
-//       .map(
-//         (ten) =>
-//           `<li class="px-3 py-2 hover:bg-white/10 text-white" >${
-//             ten.title || ten.name || ""
-//           }</li>`
-//       )
-//       .join("");
+  listEl.addEventListener("click", (e) => {
+    const li = e.target.closest("li");
+    if (!li) return;
 
-//     box.classList.remove("hidden");
-//     box.classList.add("flex");
-//   });
-// }
+    if (li.textContent.trim() === "Không tìm thấy kết quả") return;
+
+    inputEl.value = li.textContent.trim();
+    boxSug.classList.add("hidden");
+    boxSug.classList.remove("flex");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (inputEl.contains(e.target) || boxSug.contains(e.target)) return;
+    boxSug.classList.add("hidden");
+    boxSug.classList.remove("flex");
+  });
+}

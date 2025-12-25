@@ -7,11 +7,13 @@ import {
 import { Sidebar } from "../components/sidebar";
 import control from "../pages/control";
 import { activeButton } from "../components/sidebar";
+import { initSearchSuggest } from "../pages/input-search";
 export function defaultLayout() {
   setTimeout(() => {
     initHeader();
     updateLoginAuth();
     menuCustom();
+    initSearchSuggest();
     activeButton();
   }, 0);
 
