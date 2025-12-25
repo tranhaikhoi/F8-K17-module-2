@@ -3,21 +3,21 @@ import instance from "../httpRequest";
 export default function explore() {
   return `
     <section class="text-white flex gap-5 w-full h-4 mb-35">
-      <a
+      <a href="/explore/new-release" data-navigo
         class="flex items-center gap-3 px-6 py-8 bg-white/10 rounded-xl text-xl font-bold w-1/3 hover:bg-white/20 cursor-pointer"
       >
         <i class="fa-solid fa-compact-disc text-2xl"></i>
         <p>Bản phát hành mới</p>
       </a>
 
-      <a
+      <a href="/explore/charts" data-navigo
         class="flex items-center gap-3 px-6 py-8 bg-white/10 rounded-xl text-xl font-bold w-1/3 hover:bg-white/20 cursor-pointer"
       >
         <i class="fa-solid fa-chart-line text-2xl"></i>
         <p>Bảng xếp hạng</p>
       </a>
 
-      <a
+      <a href="/explore/moods-and-genres" data-navigo
         class="flex items-center gap-3 px-6 py-8 bg-white/10 rounded-xl text-xl font-bold w-1/3 hover:bg-white/20 cursor-pointer"
       >
         <i class="fa-regular fa-face-smile text-2xl"></i>
@@ -61,7 +61,7 @@ export async function initNewAlbumExplore() {
   container.innerHTML = newAlbums
     .map(
       (newsAlbum) => `
-        <a href="#!" class="w-55 block cursor-pointer group shrink-0">
+        <a href="/explore/${newsAlbum.slug}" class="w-55 block cursor-pointer group shrink-0">
           <div class="relative overflow-hidden rounded-xl">
             <img
               src="${newsAlbum.thumb}"
@@ -89,7 +89,7 @@ export function tranformNewAlbum() {
   if (!scrollBox || !prevNewAlbum || !nextNewAlbum) return;
 
   function getScrollAmount() {
-    return scrollBox.clientWidth; // cuộn theo 1 trang
+    return scrollBox.clientWidth;
   }
 
   function updateBtnNewAlbum() {
@@ -140,26 +140,40 @@ export function Fellings() {
 
 export async function initfeelings() {
   const res = await instance.get("/explore/meta");
-  const feelings = res.data.categories;
+
+  const categories = res.data.categories;
+  const lines = res.data.lines;
+
+  const allItems = [...categories, ...lines];
 
   const feelingContainer = document.querySelector(".js-feelings");
   if (!feelingContainer) return;
 
-  feelingContainer.innerHTML = feelings
+  feelingContainer.innerHTML = allItems
     .map(
-      (feeling) => `
-        <a href="#!" class="block w-72 shrink-0">
+      (item) => `
+        <a href="/explore/lines/${item.slug}" data-navigo
+           class="block w-72 shrink-0">
           <div class="relative h-14 rounded-xl bg-zinc-800 overflow-hidden flex items-center justify-center">
-            <span class="absolute left-0 top-0 h-full w-2" style="background:${feeling.color}"></span>
-            <span class="absolute left-0 top-0 h-full w-8 opacity-30 blur-md" style="background:${feeling.color}"></span>
-            <span class="relative text-white font-bold">${feeling.name}</span>
+            
+            <span class="absolute left-0 top-0 h-full w-2"
+                  style="background:${item.color}"></span>
+
+            <span class="absolute left-0 top-0 h-full w-8 opacity-30 blur-md"
+                  style="background:${item.color}"></span>
+
+            <span class="relative text-white font-bold truncate">
+              ${item.name}
+            </span>
           </div>
         </a>
       `
     )
     .join("");
+
   tranformFeeling();
 }
+
 export function tranformFeeling() {
   const scrollFeel = document.querySelector(".js-feeling-scroll");
   const prevFeeling = document.querySelector(".prev-feeling");
@@ -167,7 +181,7 @@ export function tranformFeeling() {
   if (!scrollFeel || !prevFeeling || !nextFeeling) return;
 
   function getScrollFeel() {
-    return scrollFeel.clientWidth; // cuộn theo 1 trang
+    return scrollFeel.clientWidth;
   }
 
   function updateBtnFeel() {
@@ -225,7 +239,9 @@ export async function initNewVideosExplore() {
   videosContainer.innerHTML = videos
     .map(
       (video) => `
-        <a href="#!" class="w-85 block cursor-pointer group shrink-0">
+        <a href="/videos/details/${
+          video.slug
+        }" class="w-85 block cursor-pointer group shrink-0">
           <div class="relative overflow-hidden rounded-xl">
             <img
               src="${video.thumb}"
@@ -239,12 +255,21 @@ export async function initNewVideosExplore() {
           </div>
 
           <p class="truncate w-50">${video.name}</p>
-          <p>${video.views} lượt xem</p>
+          <p>${formatViews(video.views)} lượt xem</p>
         </a>
       `
     )
     .join("");
   tranformVideo();
+}
+function formatViews(views) {
+  if (views >= 1_000_000) {
+    return `${(views / 1_000_000).toFixed(0)} Tr lượt xem`;
+  }
+  if (views >= 1_000) {
+    return `${(views / 1_000).toFixed(0)} N lượt xem`;
+  }
+  return `${views} lượt xem`;
 }
 export function tranformVideo() {
   const scrollVideo = document.querySelector(".js-video-scroll");
@@ -253,7 +278,7 @@ export function tranformVideo() {
   if (!scrollVideo || !prevVideo || !nextVideo) return;
 
   function getScrollVideo() {
-    return scrollVideo.clientWidth; // cuộn theo 1 trang
+    return scrollVideo.clientWidth;
   }
 
   function updateBtnVideo() {

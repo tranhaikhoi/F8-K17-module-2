@@ -1,5 +1,7 @@
 import instance from "../httpRequest";
 import { Header } from "../components/header";
+import { updateLoginAuth } from "../components/header";
+import { updateSidebarAuth } from "../components/sidebar";
 export default function login() {
   return `
     <section class="fixed inset-0 w-full h-screen overflow-hidden">
@@ -243,7 +245,7 @@ export function initRegister() {
 }
 
 //==================================================Đăng nhập============================================//
-export function initLogin() {
+export function initLogin(router) {
   const emailLog = document.querySelector("#emailLog");
   const passwordLog = document.querySelector("#passwordLog");
   const emailErrorTextLog = document.querySelector("#emailErrorTextLog");
@@ -306,13 +308,14 @@ export function initLogin() {
         successLogin.classList.remove("translate-x-full", "opacity-0");
         successLogin.classList.add("opacity-100");
       }
-
+      updateLoginAuth();
+      updateSidebarAuth();
       setTimeout(() => {
         successLogin?.classList.add("opacity-0");
       }, 1200);
 
       setTimeout(() => {
-        window.location.href = "/";
+        router.navigate("/");
       }, 1500);
     } catch (error) {
       console.error(error);
@@ -323,26 +326,45 @@ export function initLogin() {
 //=======================================================ĐĂNG XUẤT============================================================================//
 export async function initLogOut() {
   const access_token = localStorage.getItem("access_token");
+  const refresh_token = localStorage.getItem("refresh_token");
+
   try {
     await instance.delete("/auth/logout", {
-      method: "DELETE",
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
+      data: { refresh_token },
     });
+  } catch (error) {
+    const sats = error?.response?.status;
+    if (sats !== 401 && sats !== 404) {
+      console.erroror(error);
+      alert(error?.response?.data?.message || "Logout thất bại!");
+      return;
+    }
   } finally {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
   }
 }
-export function logoutPress() {
-  const logOutEl = document.querySelector(".js-logout");
-  if (!logOutEl) return;
-  logOutEl.addEventListener("click", async (e) => {
+
+let logoutHandler = null;
+
+export function logoutPress(router) {
+  const logoutEl = document.querySelector(".js-logout");
+  if (!logoutEl) return;
+
+  if (logoutHandler) logoutEl.removeEventListener("click", logoutHandler);
+
+  logoutHandler = async (e) => {
     e.preventDefault();
     await initLogOut();
-    window.location.href = "/auth/profile";
-  });
+    updateLoginAuth();
+    updateSidebarAuth();
+    document.querySelector("#menu")?.classList.add("hidden");
+    router.navigate("/login");
+  };
+
+  logoutEl.addEventListener("click", logoutHandler);
 }
-//=====================================================HỒ SƠ NGƯỜI DÙNG=======================================================================//

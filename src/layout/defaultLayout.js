@@ -5,7 +5,8 @@ import {
   menuCustom,
 } from "../components/header";
 import { Sidebar } from "../components/sidebar";
-import { control } from "../pages/control";
+import control from "../pages/control";
+
 export function defaultLayout() {
   setTimeout(() => {
     initHeader();
@@ -22,6 +23,11 @@ export function defaultLayout() {
       
       </main>
       ${control()}
+      
+    </div>
+    <div id="loading-overlay"
+      class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div class="h-14 w-14 rounded-full border-4 border-white/30 border-t-white animate-spin"></div>
     </div>
   `;
 }

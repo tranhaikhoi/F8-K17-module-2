@@ -15,7 +15,7 @@ body {
     #003566 75%,
     #0b3a6a 100%
   );
-  background-attachment: fixed; /* cuộn vẫn giữ hiệu ứng đẹp */
+  background-attachment: fixed;
 }
 .scrollbar::-webkit-scrollbar {
   height: 8px;
@@ -28,4 +28,9 @@ body {
 
 .scrollbar::-webkit-scrollbar-track {
   background: black;
+  border-radius: 9999px;
+}
+.hide-layout header,
+.hide-layout aside {
+  display: none !important;
 }

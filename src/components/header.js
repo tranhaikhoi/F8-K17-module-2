@@ -24,7 +24,7 @@ export const Header = () => {
       </div>
 
       <div class="flex flex-1 items-center mx-auto">
-        <div class="flex w-full max-w-[550px] items-center gap-2 rounded-lg bg-white/10 px-3 py-2 ring-1 ring-white/10 focus-within:ring-white/20">
+        <div class="relative flex w-full max-w-[550px] items-center gap-2 rounded-lg bg-white/10 px-3 py-2 ring-1 ring-white/10 focus-within:ring-white/20">
           <span class="text-white/70">
             <span class="material-symbols-outlined text-xl leading-none">
               search
@@ -37,18 +37,12 @@ export const Header = () => {
             class="js-inputSearch relative w-full bg-transparent text-sm text-white placeholder:text-white/50 outline-none"
           />
 
-          <div class="suggestions absolute bottom-[-50px] hidden h-10 w-full max-w-[530px] flex-col bg-black">
-            <ul class="h-10 border-b border-gray pt-5 text-gray-500">
-              Gợi ý
-              <li></li>
-            </ul>
+            <div class="suggestions absolute top-full left-0 mt-2 hidden w-full max-w-[550px] flex-col rounded-xl bg-black/95 ring-1 ring-white/10 overflow-hidden z-50">
+              <div class="px-3 py-2 text-gray-400 text-xs border-b border-white/10">Gợi ý</div>
+                <ul class="js-suggest-list text-white"></ul>
 
-            <ul class="h-10 pt-5 text-gray-500">
-              Kết quả
-              <li></li>
-            </ul>
-          </div>
-        </div>
+              </div>
+            </div>
       </div>
 
       <div class="mr-11 flex items-center gap-2">
@@ -91,7 +85,7 @@ export const Header = () => {
     class="absolute right-0 top-full mt-2  w-52 rounded-lg bg-black/90  text-white shadow-lg hidden"
   >
     <li class="cursor-pointer  px-3 py-2 hover:bg-white/10 hover:border-b js-profile "><a href="/auth/profile" data-navigo>Thông tin người dùng</a></li>
-    <li class="cursor-pointer  px-3 py-2 hover:bg-white/10 hover:border-b js-change-password">Đổi mật khẩu</li>
+    <li class="cursor-pointer  px-3 py-2 hover:bg-white/10 hover:border-b js-change-password"><a href="/auth/change-password">Đổi mật khẩu</a></li>
     <li class="cursor-pointer rounded-md px-3 py-2 hover:border-b hover:bg-white/10 text-red-500 js-logout">Đăng xuất</li>
   </ul>
 </div>
@@ -110,7 +104,7 @@ export function initHeader() {
 
   if (!btnBar || !icon || !mainContent || !miniSidebar) return;
 
-  // Tạo newSidebar nếu chưa có
+  // Tạo newSidebar
   let newSidebar = document.querySelector(".js-newSidebar");
   if (!newSidebar) {
     newSidebar = document.createElement("aside");
@@ -154,27 +148,18 @@ export function initHeader() {
 
     miniSidebar.style.opacity = open ? "0" : "1";
     miniSidebar.style.pointerEvents = open ? "none" : "auto";
-
-    // đẩy main
     mainContent.classList.toggle("ml-[200px]", open);
     mainContent.classList.toggle("ml-[5%]", !open);
-
-    // đổi icon
     icon.className = open ? "fa-solid fa-x" : "fa-solid fa-bars text-xl";
   };
-
-  // Trạng thái ban đầu đóng
   btnBar.classList.remove("is-open");
   renderNewSidebar(false);
-
-  // Toggle khi click
   btnBar.addEventListener("click", () => {
     btnBar.classList.toggle("is-open");
     const open = btnBar.classList.contains("is-open");
     renderNewSidebar(open);
   });
 
-  // ESC để đóng
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       btnBar.classList.remove("is-open");
@@ -183,20 +168,6 @@ export function initHeader() {
   });
 }
 
-//==========================================================Xử lý suggest input=========================================================//
-// export function initInput (){
-//   async function fetchSearch(){
-//     const res= await instance.get("/search/suggestions",{
-//       param: p.suggestions
-//     })
-//     const searchs = document
-//   }
-//   const inputEl =document.querySelector(".js-inputSearch")
-
-//   inputEl.addEventListener("input",()=>{
-//     if()
-//   })
-// }
 //======================================================Xử lý nút đăng nhập --> avartar tên==============================================//
 export function updateLoginAuth() {
   const loginBtn = document.querySelector("#btnHeaderLogin");
@@ -237,12 +208,3 @@ export function menuCustom() {
     menu.classList.add("hidden");
   });
 }
-//=================================================Xử lý cập nhập thông tin người dùng========================================================//
-// export function initProfile() {}
-// const profileUser = document.querySelector(".js-profile");
-// profileUser.addEventListener("click", async (e) => {
-//   e.preventDefault();
-//   await profile();
-//   window.location.href = "/auth/profile";
-// });
-//=================================================Đổi mật khẩu===============================================================================//

@@ -27,7 +27,7 @@ export default function Mood() {
   `;
 }
 
-export function moodScript() {
+export function moodScript(router) {
   async function fetchMoods() {
     // Step 2
     const response = await instance.get("/moods");
@@ -45,6 +45,7 @@ export function moodScript() {
         `
       )
       .join("");
+    router?.updatePageLinks?.();
   }
   fetchMoods();
 }
@@ -94,7 +95,7 @@ export function quickPicks() {
   `;
 }
 
-export async function initquickPicks() {
+export async function initquickPicks(router) {
   const res = await instance.get("/quick-picks");
 
   const picksContainer = document.querySelector(".js-picks");
@@ -103,7 +104,9 @@ export async function initquickPicks() {
   picksContainer.innerHTML = res.data
     .map(
       (pick) => `
-        <a href="#!" class="group flex items-center gap-4 py-2 px-3 rounded-lg hover:bg-white/10">
+        <a href="/quick-picks/${
+          pick.slug
+        }" data-navigo class="group flex items-center gap-4 py-2 px-3 rounded-lg hover:bg-white/10">
           <div class="relative w-12 h-12 shrink-0 overflow-hidden rounded">
             <img
               src="${pick.thumbnails?.[0] ?? ""}"
@@ -128,6 +131,7 @@ export async function initquickPicks() {
       `
     )
     .join("");
+  router?.updatePageLinks?.();
 }
 
 // ======================================================
@@ -152,7 +156,7 @@ export function AlbumForYou() {
   `;
 }
 
-export async function initAlbumForYou() {
+export async function initAlbumForYou(router) {
   const res = await instance.get("/home/albums-for-you", {
     params: { country: "GLOBAL", limit: 12 },
   });
@@ -163,7 +167,7 @@ export async function initAlbumForYou() {
   sugsContainer.innerHTML = res.data
     .map(
       (sug) => `
-        <a href="#!" class="w-55 block cursor-pointer group shrink-0 js-block-suggestion">
+        <a href="/albums/details/${sug.slug}" data-navigo class="w-55 block cursor-pointer group shrink-0 js-block-suggestion">
           <div class="relative overflow-hidden rounded-xl">
             <img
               src="${sug.thumbnails}"
@@ -182,6 +186,7 @@ export async function initAlbumForYou() {
       `
     )
     .join("");
+  router?.updatePageLinks?.();
   tranformAlbumSug();
 }
 //==========================pre-next album gợi ý cho bạn==============================//
@@ -239,7 +244,7 @@ export function todayHit() {
   `;
 }
 
-export async function initTodayHit() {
+export async function initTodayHit(router) {
   const res = await instance.get("/home/todays-hits", {
     params: { country: "GLOBAL", limit: 12 },
   });
@@ -250,7 +255,7 @@ export async function initTodayHit() {
   hitsContainer.innerHTML = res.data
     .map(
       (hit) => `
-        <a href="#!" class="w-55 block cursor-pointer group shrink-0">
+        <a href="/playlists/details/${hit.slug}" data-navigo class="w-55 block cursor-pointer group shrink-0">
           <div class="relative overflow-hidden rounded-xl">
             <img
               src="${hit.thumbnails}"
@@ -269,6 +274,7 @@ export async function initTodayHit() {
       `
     )
     .join("");
+  router?.updatePageLinks?.();
   tranformTodayHit();
 }
 //==========================pre-next hôm nay hot==============================//
@@ -327,9 +333,7 @@ export function albumViet() {
 }
 
 export async function initAlbumViets() {
-  const res = await instance.get("/playlists/by-country", {
-    params: { country: "{ code}", limit: 20 },
-  });
+  const res = await instance.get("/quick-picks");
 
   const vietsContainer = document.querySelector(".js-viets");
   if (!vietsContainer) return;
@@ -337,7 +341,7 @@ export async function initAlbumViets() {
   vietsContainer.innerHTML = res.data
     .map(
       (viet) => `
-        <a href="#!" class="w-55 block cursor-pointer group shrink-0">
+        <a href="/quick-picks/${viet.slug}" data-navigo class="w-55 block cursor-pointer group shrink-0">
           <div class="relative overflow-hidden rounded-xl">
             <img
               src="${viet.thumbnails}"
