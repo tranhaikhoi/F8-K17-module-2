@@ -26,7 +26,7 @@
 //       .slice(0, 8)
 //       .map(
 //         (ten) =>
-//           `<li class="px-3 py-2 hover:bg-white/10" style="color:#fff">${
+//           `<li class="px-3 py-2 hover:bg-white/10 text-white" >${
 //             ten.title || ten.name || ""
 //           }</li>`
 //       )

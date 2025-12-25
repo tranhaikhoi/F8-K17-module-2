@@ -6,7 +6,6 @@ import {
 } from "../components/header";
 import { Sidebar } from "../components/sidebar";
 import control from "../pages/control";
-
 export function defaultLayout() {
   setTimeout(() => {
     initHeader();
