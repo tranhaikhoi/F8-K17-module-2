@@ -135,7 +135,7 @@ export async function initLines(router) {
   container.innerHTML = lines
     .map(
       (line) => `
-        <a href="/explore/moods-and-genres/${line.slug}" data-navigo
+        <a href="lines/${line.slug}/songs" data-navigo
            class="block w-72 shrink-0">
           <div class="relative h-14 rounded-xl bg-zinc-800 overflow-hidden flex items-center justify-center">
             <span class="absolute left-0 top-0 h-full w-8 opacity-30 blur-md"

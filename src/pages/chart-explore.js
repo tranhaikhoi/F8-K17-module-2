@@ -86,7 +86,7 @@ function formatViews(views) {
   return `${views} lượt xem`;
 }
 
-export async function initVideoRank(country = "GLOBAL") {
+export async function initVideoRank(router, country = "GLOBAL") {
   const response = await instance.get("/charts/videos", {
     params: {
       country,
@@ -101,9 +101,9 @@ export async function initVideoRank(country = "GLOBAL") {
   container.innerHTML = videos
     .map(
       (video) => `
-        <a href="/videos/details/${
+        <a href="/explore/videos/${
           video.id
-        }" class="w-80 block shrink-0 cursor-pointer group">
+        }" data-navigo class="w-80 block shrink-0 cursor-pointer group">
           <div class="relative overflow-hidden rounded-xl">
             <img
               src="${video.thumb}"
@@ -127,6 +127,7 @@ export async function initVideoRank(country = "GLOBAL") {
       `
     )
     .join("");
+  router?.updatePageLinks();
 }
 export async function initArtistRank(country = "GLOBAL") {
   const response = await instance.get("/charts/top-artists", {

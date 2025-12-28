@@ -39,7 +39,7 @@ import {
   tranformVideo,
 } from "../pages/explore";
 import newRelease, { initNewRelease } from "../pages/new-release";
-import Charts, { initChart } from "../pages/chart-explore";
+import Charts, { initChart, initVideoRank } from "../pages/chart-explore";
 import moodGenres, {
   initGenres,
   initMoodOthers,
@@ -69,11 +69,21 @@ import newAlbumDetail, {
 import feelingDetail, {
   initfeelingDetail,
 } from "../pages/detail-feeling-explore";
-import videoDetailexp, { initvideoDetailexp } from "../pages/detail-video-exp";
+import videoDetailexp, {
+  customVideo,
+  initvideoDetailexp,
+} from "../pages/detail-video-exp";
 import newReleaseDetail, {
   initnewReleaseDetail,
 } from "../pages/detail-new-release";
 import { installLoading } from "../components/loading-overlay";
+import detailLine, {
+  initdetailSongLines,
+  initdetailPlaylistLines,
+  initdetailVideoLines,
+  initdetailAlbumLines,
+} from "../pages/detail-lines";
+// import { initDetailCategory } from "../pages/detail-category";
 // import videoDetailCharts, {
 //   initvideoDetailCharts,
 // } from "../pages/detail-video-chart";
@@ -105,11 +115,11 @@ export default function router() {
         "#main-content"
       ).innerHTML = `${explore()}${newAlbumExplore()}${Fellings()}${newVideosExplore()}`;
       router.updatePageLinks();
-      initNewAlbumExplore();
+      initNewAlbumExplore(router);
       tranformNewAlbum();
       initfeelings();
       tranformFeeling();
-      initNewVideosExplore();
+      initNewVideosExplore(router);
       tranformVideo();
       updateLoginAuth();
       logoutPress(router);
@@ -160,6 +170,7 @@ export default function router() {
       document.querySelector("#main-content").innerHTML = Charts();
       router.updatePageLinks();
       initChart();
+      initVideoRank(router);
       initArtistRank();
     })
     .on("/explore/moods-and-genres", () => {
@@ -195,14 +206,15 @@ export default function router() {
     .on("/explore/lines/:slug", (item) => {
       const slug = item.data.slug;
       document.querySelector("#main-content").innerHTML = feelingDetail();
-      initfeelingDetail();
+      initfeelingDetail(slug);
     })
     .on("/videos/details/:slug", (item) => {
       const slug = item.data.slug;
       document.querySelector("#main-content").innerHTML = videoDetailexp();
       initvideoDetailexp(slug, router);
+      customVideo();
     })
-    // .on("/videos/details/:id", (item) => {
+    // .on("/explore/videos/:id", (item) => {
     //   const id = item.data.id;
     //   document.querySelector("#main-content").innerHTML = videoDetailCharts();
     //   initvideoDetailCharts(id, router);
@@ -213,7 +225,21 @@ export default function router() {
       document.querySelector("#main-content").innerHTML = newReleaseDetail();
       router.updatePageLinks();
       initnewReleaseDetail(id);
+    })
+    .on("/lines/:slug/songs", (item) => {
+      const slug = item.data.slug;
+      document.querySelector("#main-content").innerHTML = detailLine();
+      router.updatePageLinks();
+      initdetailSongLines(router, slug);
+      initdetailPlaylistLines(router, slug);
+      initdetailVideoLines(router, slug);
+      initdetailAlbumLines(router, slug);
     });
-
+  // .on("/explore/categories/:slug", (item, router) => {
+  //   const slug = item.data.slug;
+  //   document.querySelector("#main-content").innerHTML =
+  //     router.updatePageLinks();
+  //   initDetailCategory(slug, router);
+  // });
   router.resolve();
 }

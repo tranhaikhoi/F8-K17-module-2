@@ -25,7 +25,7 @@ export const Sidebar = () => {
           <span class="block text-center"><i class="fa-solid fa-crown"></i></span>
           <p class="mt-2 text-[10px] text-center">Nâng cấp</p>
         </a>
-        <a href="#!" class="w-full rounded-2xl py-3 cursor-pointer hover:bg-gray-600 hidden js-login-icon">
+        <a href="/login" data-navigo class="w-full rounded-2xl py-3 cursor-pointer hover:bg-gray-600 hidden js-login-icon">
           <span class="block text-center"><i class="fa-solid fa-user"></i></span>
           <p class="mt-2 text-[10px] text-center">Đăng nhập</p>
         </a>
@@ -39,7 +39,7 @@ export function activeButton() {
 
   links.forEach((link) => {
     link.addEventListener("click", () => {
-      links.forEach((x) => x.classList.remove("bg-gray-600"));
+      links.forEach((item) => item.classList.remove("bg-gray-600"));
       link.classList.add("bg-gray-600");
     });
   });

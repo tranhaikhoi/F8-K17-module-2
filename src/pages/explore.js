@@ -51,7 +51,7 @@ export function newAlbumExplore() {
   `;
 }
 
-export async function initNewAlbumExplore() {
+export async function initNewAlbumExplore(router) {
   const res = await instance.get("/explore/albums");
   const newAlbums = res.data.items;
 
@@ -61,7 +61,7 @@ export async function initNewAlbumExplore() {
   container.innerHTML = newAlbums
     .map(
       (newsAlbum) => `
-        <a href="/explore/${newsAlbum.slug}" class="w-55 block cursor-pointer group shrink-0">
+        <a href="/explore/${newsAlbum.slug}" data-navigo class="w-55 block cursor-pointer group shrink-0">
           <div class="relative overflow-hidden rounded-xl">
             <img
               src="${newsAlbum.thumb}"
@@ -81,6 +81,7 @@ export async function initNewAlbumExplore() {
     )
     .join("");
   tranformNewAlbum();
+  router?.updatePageLinks();
 }
 export function tranformNewAlbum() {
   const scrollBox = document.querySelector(".js-new-album-scroll");
@@ -141,34 +142,51 @@ export function Fellings() {
 export async function initfeelings() {
   const res = await instance.get("/explore/meta");
 
-  const categories = res.data.categories;
-  const lines = res.data.lines;
+  const categories = res.data.categories || [];
+  const lines = res.data.lines || [];
 
-  const allItems = [...categories, ...lines];
+  const allItems = [];
+  //lấy item trong categories
+  for (let i = 0; i < categories.length; i++) {
+    const item = categories[i];
+    allItems.push({
+      slug: item.slug,
+      name: item.name,
+      color: item.color,
+      type: "category",
+    });
+  }
+  //lấy item trong lines
+  for (let i = 0; i < lines.length; i++) {
+    const item = lines[i];
+    allItems.push({
+      slug: item.slug,
+      name: item.name,
+      color: item.color,
+      type: "line",
+    });
+  }
 
   const feelingContainer = document.querySelector(".js-feelings");
   if (!feelingContainer) return;
 
   feelingContainer.innerHTML = allItems
-    .map(
-      (item) => `
-        <a href="/explore/lines/${item.slug}" data-navigo
-           class="block w-72 shrink-0">
+    .map((item) => {
+      const href =
+        item.type === "category"
+          ? `/explore/categories/${item.slug}`
+          : `/explore/lines/${item.slug}`;
+
+      return `
+        <a href="${href}" data-navigo class="block w-72 shrink-0">
           <div class="relative h-14 rounded-xl bg-zinc-800 overflow-hidden flex items-center justify-center">
-            
-            <span class="absolute left-0 top-0 h-full w-2"
-                  style="background:${item.color}"></span>
-
-            <span class="absolute left-0 top-0 h-full w-8 opacity-30 blur-md"
-                  style="background:${item.color}"></span>
-
-            <span class="relative text-white font-bold truncate">
-              ${item.name}
-            </span>
+            <span class="absolute left-0 top-0 h-full w-2" style="background:${item.color}"></span>
+            <span class="absolute left-0 top-0 h-full w-8 opacity-30 blur-md" style="background:${item.color}"></span>
+            <span class="relative text-white font-bold truncate">${item.name}</span>
           </div>
         </a>
-      `
-    )
+      `;
+    })
     .join("");
 
   tranformFeeling();
@@ -229,7 +247,7 @@ export function newVideosExplore() {
   `;
 }
 
-export async function initNewVideosExplore() {
+export async function initNewVideosExplore(router) {
   const res = await instance.get("/explore/videos");
   const videos = res.data.items;
 
@@ -261,6 +279,7 @@ export async function initNewVideosExplore() {
     )
     .join("");
   tranformVideo();
+  router?.updatePageLinks();
 }
 function formatViews(views) {
   if (views >= 1_000_000) {

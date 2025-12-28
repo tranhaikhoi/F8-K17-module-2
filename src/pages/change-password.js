@@ -48,7 +48,7 @@ export function changePassword() {
                    outline-none focus:ring-0"
           />
           <h3 class="hidden text-red-600" id="newPassError">
-            Mật khẩu phải có ít nhất 8 ký tự
+            Mật khẩu phải có ít nhất 6 ký tự
           </h3>
         </label>
 
@@ -105,7 +105,7 @@ export function initChangePassword(router) {
     } else {
       oldPassError.classList.add("hidden");
     }
-    if (newPassword.value.trim().length < 8) {
+    if (newPassword.value.trim().length < 6) {
       newPassError.classList.remove("hidden");
       isValid = false;
     } else {

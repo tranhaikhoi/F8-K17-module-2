@@ -39,7 +39,7 @@ export function moodScript(router) {
     moodsContainer.innerHTML = moods
       .map(
         (mood) => `
-          <div class="flex items-center px-3 py-2 rounded-lg text-sm shrink-0 cursor-pointer bg-white/10 text-white hover:bg-white/20">
+          <div class="flex items-center px-3 py-2 rounded-lg text-sm shrink-0 cursor-pointer bg-white/10 text-white hover:bg-white/20 nav-btn">
             <a href="/moods/${mood.slug}" data-navigo>${mood.name}</a>
           </div>
         `
@@ -49,7 +49,6 @@ export function moodScript(router) {
   }
   fetchMoods();
 }
-
 //==========================================hello người dùng==================================================//
 export function initHelloUser() {
   const helloName = document.querySelector(".js-hello-name");
@@ -65,11 +64,34 @@ export function initHelloUser() {
 // ======================================================
 export function recentListen() {
   return `
-    <h2 class="text-5xl font-semibold text-white mb-20">
-      Nghe gần đây <span></span>
-    </h2>
+    <section>
+      <!--<h2 class="text-5xl font-semibold text-white mb-20">
+        Nghe gần đây <span></span>
+      </h2>-->
+      <!--<div class="absolute right-0 top-15 flex items-center gap-4">
+        <button class="text-white w-8 h-8 flex items-center justify-center bg-cyan-900 rounded-full cursor-pointer">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="text-white w-8 h-8 flex items-center justify-center bg-cyan-900 rounded-full cursor-pointer">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>-->
+       <div class="flex flex-nowrap gap-3 overflow-x-auto overflow-y-hidden pb-10 scroll-smooth scrollbar">
+        <div class="flex flex-col gap-3 shrink-0 js-recent"></div>
+      </div>
+    </section>
+
   `;
 }
+// export async function initRecentListen(router) {
+//   const res = await instance.get("/history/recent-listens",
+//  ,
+//   });
+//   const recentContainer = document.querySelector(".js-recent");
+//   if (!recentContainer) return;
+//   recentContainer.innerHTML = res.data
+//     .map(
+//       (recent) => ``)
 
 // ======================================================
 // Quick Pick

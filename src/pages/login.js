@@ -50,6 +50,8 @@ export default function login() {
         </p>
       </form>
       <!---------------------------------------------------------ĐĂNG KÝ------------------------------------------------------------------>
+          <span class="js-success-register fixed z-20 top-30 right-0 px-20 py-2.5 text-white bg-green-600 rounded-2xl
+         translate-x-full opacity-0 transition-all duration-300 ease-in-out">Đăng ký thành công</span>
       <form
         class="absolute top-30 left-1/2 -translate-x-1/2
          flex flex-col bg-white/50 backdrop-blur-xl w-[28%] px-14 py-10 rounded-[10px] js-register hidden" id="registerForm"
@@ -126,6 +128,7 @@ export function initRegister() {
   const textLogin = document.querySelector(".js-login");
   const btnRes = document.querySelector(".btn-res");
   const loginForm = document.querySelector("#loginForm");
+  const successRegister = document.querySelector(".js-success-register");
 
   if (!btnRes) return; // tránh lỗi nếu chưa render HTML
   // Hàm kiểm tra email
@@ -168,8 +171,8 @@ export function initRegister() {
       passwordErrorText.textContent = "Password không được để trống";
       passwordErrorText.classList.remove("hidden");
       passwordEl.classList.add("border", "border-red-600");
-    } else if (passwordEl.value.length < 8) {
-      passwordErrorText.textContent = "Password phải có ít nhất 8 ký tự";
+    } else if (passwordEl.value.length < 6) {
+      passwordErrorText.textContent = "Password phải có ít nhất 6 ký tự";
       passwordErrorText.classList.remove("hidden");
       passwordEl.classList.add("border", "border-red-600");
     } else {
@@ -232,7 +235,13 @@ export function initRegister() {
       localStorage.setItem("refresh_token", data.refresh_token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      alert("Đăng ký thành công!");
+      successRegister.classList.remove("translate-x-full", "opacity-0");
+      successRegister.classList.add("opacity-100");
+
+      setTimeout(() => {
+        successRegister.classList.remove("opacity-100");
+        successRegister.classList.add("opacity-0", "translate-x-full");
+      }, 1200);
       registerForm.classList.add("hidden");
       loginForm.classList.remove("hidden");
     } catch (error) {
