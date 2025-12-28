@@ -81,7 +81,7 @@ export async function initFeature(slug) {
       const description = item.description ? item.description : "";
 
       return `
-        <a href="#!" class="w-55 block cursor-pointer group shrink-0">
+        <a href="/playlists/details/${item.slug}" data-navigo class="w-55 block cursor-pointer group shrink-0">
           <div class="relative overflow-hidden rounded-xl">
             <img
               src="${img}"

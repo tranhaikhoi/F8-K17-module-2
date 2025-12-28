@@ -86,7 +86,7 @@ function formatViews(views) {
   return `${views} lượt xem`;
 }
 
-export async function initVideoRank(router, country = "GLOBAL") {
+export async function initVideoRank(country = "GLOBAL", router) {
   const response = await instance.get("/charts/videos", {
     params: {
       country,

@@ -170,7 +170,7 @@ export default function router() {
       document.querySelector("#main-content").innerHTML = Charts();
       router.updatePageLinks();
       initChart();
-      initVideoRank(router);
+      initVideoRank("GLOBAL", router);
       initArtistRank();
     })
     .on("/explore/moods-and-genres", () => {
